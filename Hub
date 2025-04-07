@@ -8,6 +8,7 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.Name = "MainGui"
+screenGui.ResetOnSpawn = false
 
 -- Основная рамка для всего меню
 local menuFrame = Instance.new("Frame")
