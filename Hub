@@ -1,0 +1,266 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local camera = workspace.CurrentCamera
+local debris = game:GetService("Debris")
+local UserInputService = game:GetService("UserInputService")
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "MainGui"
+
+-- Основная рамка для всего меню
+local menuFrame = Instance.new("Frame")
+menuFrame.Size = UDim2.new(0, 400, 0, 200)
+menuFrame.Position = UDim2.new(0.5, -200, 0.9, -100)
+menuFrame.BackgroundTransparency = 0.5
+menuFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+menuFrame.Parent = screenGui
+
+-- Картинка
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Size = UDim2.new(0, 50, 0, 50)
+imageLabel.Position = UDim2.new(0, 10, 0, 10)
+imageLabel.Image = "rbxassetid://133105446407082"
+imageLabel.Parent = menuFrame
+
+-- Текст JABAHUB
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 300, 0, 30)
+titleLabel.Position = UDim2.new(0, 70, 0, 10)
+titleLabel.Text = "JABAHUB"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.BackgroundTransparency = 1
+titleLabel.Parent = menuFrame
+
+-- Кнопка Закружить
+local spinButton = Instance.new("TextButton")
+spinButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+spinButton.Position = UDim2.new(0.15, 0, 0.3, 0)
+spinButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+spinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+spinButton.TextScaled = true
+spinButton.Text = "Закружить!"
+spinButton.Parent = menuFrame
+
+-- Кнопка Антигравитация
+local gravityButton = Instance.new("TextButton")
+gravityButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+gravityButton.Position = UDim2.new(0.55, 0, 0.3, 0)
+gravityButton.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+gravityButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+gravityButton.TextScaled = true
+gravityButton.Text = "Антигравитация"
+gravityButton.Parent = menuFrame
+
+-- Кнопка Полет
+local flyButton = Instance.new("TextButton")
+flyButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+flyButton.Position = UDim2.new(0.15, 0, 0.5, 0)
+flyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+flyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+flyButton.TextScaled = true
+flyButton.Text = "🚀 Fly"
+flyButton.Parent = menuFrame
+
+-- Кнопка Переключить видимость меню
+local toggleButton = Instance.new("ImageButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0.9, -50, 0.1, 0)
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+toggleButton.Draggable = true
+toggleButton.Image = "rbxassetid://17885941020"
+toggleButton.Parent = screenGui
+
+-- Функция для переключения видимости меню
+local menuVisible = false
+toggleButton.MouseButton1Click:Connect(function()
+	menuVisible = not menuVisible
+	menuFrame.Visible = menuVisible
+end)
+
+-- Функция для перемещения кнопки
+local dragging = false
+local dragInput, dragStart, startPos
+
+toggleButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = toggleButton.Position
+	end
+end)
+
+toggleButton.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		toggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+toggleButton.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+
+local spinning = false
+local speed = 0
+local maxSpeed = 30
+local acceleration = 0.5
+local exploded = false
+
+spinButton.MouseButton1Click:Connect(function()
+	if not spinning then
+		spinning = true
+		speed = 0
+		exploded = false
+		spinButton.Text = "Хватит!"
+	else
+		spinning = false
+		spinButton.Text = "Закружить!"
+	end
+end)
+
+local function explodePlayer()
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		local explosion = Instance.new("Explosion")
+		explosion.Position = character.HumanoidRootPart.Position
+		explosion.BlastRadius = 10
+		explosion.BlastPressure = 500000
+		explosion.Parent = workspace
+
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				part.Anchored = false
+				part.Velocity = Vector3.new(
+					math.random(-100, 100),
+					math.random(50, 150),
+					math.random(-100, 100)
+				)
+			end
+		end
+
+		if character:FindFirstChild("Humanoid") then
+			character.Humanoid.Health = 0
+		end
+	end
+end
+
+-- ☁️ ANTI-GRAVITY GUI
+
+local flyingUp = false
+local floatForce = nil
+
+gravityButton.MouseButton1Click:Connect(function()
+	if flyingUp then return end
+	flyingUp = true
+	gravityButton.Text = "Летим... ☁️"
+
+	local root = character:WaitForChild("HumanoidRootPart")
+	floatForce = Instance.new("BodyVelocity")
+	floatForce.Velocity = Vector3.new(0, 50, 0)
+	floatForce.MaxForce = Vector3.new(0, 5000, 0)
+	floatForce.P = 1250
+	floatForce.Parent = root
+
+	task.delay(5, function()
+		if floatForce then
+			floatForce:Destroy()
+			floatForce = nil
+		end
+		gravityButton.Text = "БАХ! 💥"
+		wait(1.5)
+		gravityButton.Text = "Антигравитация"
+		Instance.new("Explosion", character)
+		flyingUp = false
+	end)
+end)
+
+-- 🚀 FLY GUI
+
+local flying = false
+local flySpeed = 50
+local bodyGyro
+local bodyVelocity
+
+local function startFlying()
+	local root = character:WaitForChild("HumanoidRootPart")
+
+	bodyGyro = Instance.new("BodyGyro")
+	bodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
+	bodyGyro.P = 100000
+	bodyGyro.CFrame = root.CFrame
+	bodyGyro.Parent = root
+
+	bodyVelocity = Instance.new("BodyVelocity")
+	bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+	bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
+	bodyVelocity.P = 1250
+	bodyVelocity.Parent = root
+
+	flying = true
+	flyButton.Text = "🛑 Unfly"
+end
+
+local function stopFlying()
+	if bodyGyro then bodyGyro:Destroy() end
+	if bodyVelocity then bodyVelocity:Destroy() end
+	flying = false
+	flyButton.Text = "🚀 Fly"
+end
+
+flyButton.MouseButton1Click:Connect(function()
+	if flying then
+		stopFlying()
+	else
+		startFlying()
+	end
+end)
+
+-- Кнопка F (ПК)
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.F then
+		if flying then
+			stopFlying()
+		else
+			startFlying()
+		end
+	end
+end)
+
+-- Обновление каждый кадр
+game:GetService("RunService").RenderStepped:Connect(function()
+	character = player.Character or player.CharacterAdded:Wait()
+	if character:FindFirstChild("HumanoidRootPart") then
+		local root = character.HumanoidRootPart
+
+		-- Кручение
+		if spinning then
+			if speed < maxSpeed then
+				speed += acceleration
+			else
+				if not exploded then
+					exploded = true
+					spinning = false
+					spinButton.Text = "💥"
+					explodePlayer()
+				end
+			end
+			root.CFrame *= CFrame.Angles(0, math.rad(speed), 0)
+		elseif speed > 0 then
+			speed -= acceleration * 2
+			if speed < 0 then speed = 0 end
+			root.CFrame *= CFrame.Angles(0, math.rad(speed), 0)
+		end
+
+		-- Полёт
+		if flying and bodyGyro and bodyVelocity then
+			bodyGyro.CFrame = camera.CFrame
+			bodyVelocity.Velocity = camera.CFrame.LookVector * flySpeed
+		end
+	end
+end)
