@@ -12,7 +12,7 @@ screenGui.ResetOnSpawn = false
 
 -- Основная рамка для всего меню
 local menuFrame = Instance.new("Frame")
-menuFrame.Size = UDim2.new(0, 400, 0, 200)
+menuFrame.Size = UDim2.new(0, 500, 0, 150)
 menuFrame.Position = UDim2.new(0.5, -200, 0.9, -100)
 menuFrame.BackgroundTransparency = 0.5
 menuFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -65,6 +65,60 @@ flyButton.TextScaled = true
 flyButton.Text = "🚀 Fly"
 flyButton.Parent = menuFrame
 
+local spinButtonV = Instance.new("TextButton")
+spinButtonV.Size = UDim2.new(0.3, 0, 0.1, 0)
+spinButtonV.Position = UDim2.new(0.55, 0, 0.5, 0)
+spinButtonV.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+spinButtonV.TextColor3 = Color3.fromRGB(0, 0, 0)
+spinButtonV.TextScaled = true
+spinButtonV.Text = "🌀 Вертолет"
+spinButtonV.Parent = menuFrame
+
+local frogButton = Instance.new("TextButton")
+frogButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+frogButton.Position = UDim2.new(0.15, 0, 0.7, 0)
+frogButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+frogButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+frogButton.TextScaled = true
+frogButton.Text = "Режим Жабушки🐸"
+frogButton.Parent = menuFrame
+
+local CheeseButton = Instance.new("TextButton")
+CheeseButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+CheeseButton.Position = UDim2.new(0.15, 0, 0.7, 0)
+CheeseButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+CheeseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheeseButton.TextScaled = true
+CheeseButton.Text = "Стать сыром🧀"
+CheeseButton.Parent = menuFrame
+
+local PaperButton = Instance.new("TextButton")
+PaperButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+PaperButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+PaperButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+PaperButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PaperButton.TextScaled = true
+PaperButton.Text = "Крикнуть"
+PaperButton.Parent = menuFrame
+
+local SharButton = Instance.new("TextButton")
+SharButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+SharButton.Position = UDim2.new(0.55, 0, 0.9, 0)
+SharButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+SharButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SharButton.TextScaled = true
+SharButton.Text = "Надуться Как Шар🔴"
+SharButton.Parent = menuFrame
+
+local UtkaButton = Instance.new("TextButton")
+UtkaButton.Size = UDim2.new(0.3, 0, 0.1, 0)
+UtkaButton.Position = UDim2.new(0.15, 0, 0.9, 0)
+UtkaButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+UtkaButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+UtkaButton.TextScaled = true
+UtkaButton.Text = "Похищение инопланетным целиндром🛸"
+UtkaButton.Parent = menuFrame
+
 -- Кнопка Переключить видимость меню
 local toggleButton = Instance.new("ImageButton")
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
@@ -80,6 +134,94 @@ toggleButton.MouseButton1Click:Connect(function()
 	menuVisible = not menuVisible
 	menuFrame.Visible = menuVisible
 end)
+
+CheeseButton.MouseButton1Click:Connect(function() 
+becomeCheese()	
+end)
+
+PaperButton.MouseButton1Click:Connect(function() 
+	scream()	
+end)
+
+SharButton.MouseButton1Click:Connect(function() 
+	inflatePlayer()	
+end)
+
+UtkaButton.MouseButton1Click:Connect(function() 
+	abductionEvent()	
+end)
+
+function inflatePlayer()
+	for _, part in pairs(character:GetChildren()) do
+		if part:IsA("BasePart") then
+			part.Size = part.Size * 2
+		end
+	end
+end
+
+
+function scream()
+	local sound = Instance.new("Sound", character.HumanoidRootPart)
+	sound.SoundId = "rbxassetid://18925320031" -- кричащий звук
+	sound.Volume = 5
+	sound:Play()
+	game.Debris:AddItem(sound, 5)
+end
+
+function abductionEvent()
+	local player = game.Players.LocalPlayer
+	local character = player.Character or player.CharacterAdded:Wait()
+	local hrp = character:WaitForChild("HumanoidRootPart")
+
+	-- Создаём UFO
+	local ufo = Instance.new("Part")
+	ufo.Size = Vector3.new(10, 1, 10)
+	ufo.Shape = Enum.PartType.Cylinder
+	ufo.Material = Enum.Material.Metal
+	ufo.Color = Color3.fromRGB(150, 150, 150)
+	ufo.Anchored = true
+	ufo.CFrame = hrp.CFrame * CFrame.new(0, 50, 0)
+	ufo.Parent = workspace
+
+	-- Световой луч
+	local beam = Instance.new("Part")
+	beam.Size = Vector3.new(5, 50, 5)
+	beam.Transparency = 0.6
+	beam.Anchored = true
+	beam.CanCollide = false
+	beam.Color = Color3.fromRGB(0, 255, 255)
+	beam.Material = Enum.Material.Neon
+	beam.CFrame = hrp.CFrame * CFrame.new(0, 25, 0)
+	beam.Parent = workspace
+
+	-- Эффект дыма
+	local smoke = Instance.new("Smoke", ufo)
+	smoke.Color = Color3.new(0.5, 1, 0.5)
+	smoke.Opacity = 0.3
+	smoke.Size = 10
+
+	-- Звук
+	local sound = Instance.new("Sound", ufo)
+	sound.SoundId = "rbxassetid://9126440642" -- инопланетный звук
+	sound.Volume = 1
+	sound:Play()
+
+	-- Поднимаем игрока
+	local bp = Instance.new("BodyPosition", hrp)
+	bp.MaxForce = Vector3.new(100000, 100000, 100000)
+	bp.Position = ufo.Position + Vector3.new(0, -5, 0)
+
+	-- Улетает через 5 сек
+	task.delay(5, function()
+		ufo:Destroy()
+		beam:Destroy()
+		smoke:Destroy()
+		bp:Destroy()
+	end)
+end
+
+
+
 
 -- Функция для перемещения кнопки
 local dragging = false
@@ -107,20 +249,20 @@ toggleButton.InputEnded:Connect(function(input)
 end)
 
 
-local spinning = false
+local spinningZ = false
 local speed = 0
 local maxSpeed = 30
 local acceleration = 0.5
 local exploded = false
 
 spinButton.MouseButton1Click:Connect(function()
-	if not spinning then
-		spinning = true
+	if not spinningZ then
+		spinningZ = true
 		speed = 0
 		exploded = false
 		spinButton.Text = "Хватит!"
 	else
-		spinning = false
+		spinningZ = false
 		spinButton.Text = "Закружить!"
 	end
 end)
@@ -233,6 +375,27 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	end
 end)
 
+local Camera = workspace.CurrentCamera
+
+game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		if spinningZ or speed > 0 then
+			-- лёгкий наклон экрана туда-сюда
+			local shakeAngle = math.sin(tick() * 10) * 0.5
+			Camera.CFrame *= CFrame.Angles(0, 0, shakeAngle)
+		end
+	end
+end)
+
+function becomeCheese()
+	for _, part in pairs(character:GetDescendants()) do
+		if part:IsA("BasePart") then
+			part.Material = Enum.Material.Foil
+			part.Color = Color3.fromRGB(255, 255, 102) -- желтый сыр
+		end
+	end
+end
+
 -- Обновление каждый кадр
 game:GetService("RunService").RenderStepped:Connect(function()
 	character = player.Character or player.CharacterAdded:Wait()
@@ -240,13 +403,13 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		local root = character.HumanoidRootPart
 
 		-- Кручение
-		if spinning then
+		if spinningZ then
 			if speed < maxSpeed then
 				speed += acceleration
 			else
 				if not exploded then
 					exploded = true
-					spinning = false
+					spinningZ = false
 					spinButton.Text = "💥"
 					explodePlayer()
 				end
@@ -263,5 +426,68 @@ game:GetService("RunService").RenderStepped:Connect(function()
 			bodyGyro.CFrame = camera.CFrame
 			bodyVelocity.Velocity = camera.CFrame.LookVector * flySpeed
 		end
+	end
+end)
+
+--Вертолет
+local spinning = false
+
+local function startVertolet()
+	local root = character:WaitForChild("HumanoidRootPart")
+	local spin = Instance.new("BodyAngularVelocity")
+	spin.AngularVelocity = Vector3.new(0, 10, 0)
+	spin.MaxTorque = Vector3.new(0, math.huge, 0)
+	spin.P = 1250
+	spin.Parent = root
+	spinning = true
+	return spin
+end
+
+local function stopVertolet(spin)
+	if spin then spin:Destroy() end
+	spinning = false
+end
+
+local activeSpin = nil
+spinButtonV.MouseButton1Click:Connect(function()
+	if spinning then
+		stopVertolet(activeSpin)
+		spinButtonV.Text = "🌀 Вертолет"
+	else
+		activeSpin = startVertolet()
+		spinButtonV.Text = "🛑 Остановить"
+	end
+end)
+
+--Режим Жабки
+local croaking = false
+
+local function startCroaking()
+	local humanoid = character:FindFirstChild("Humanoid")
+	if not humanoid then return end
+
+	croaking = true
+	while croaking do
+		humanoid.Jump = true
+
+		local sound = Instance.new("Sound", character:WaitForChild("Head"))
+		sound.SoundId = "rbxassetid://12221967" -- квакающая жаба
+		sound.Volume = 1
+		sound:Play()
+		game.Debris:AddItem(sound, 2)
+
+		task.wait(1.5)
+	end
+end
+
+local function stopCroaking()
+	croaking = false
+end
+
+frogButton.MouseButton1Click:Connect(function()
+	if croaking then
+		stopCroaking()
+	else
+		startCroaking()
 	end
 end)
