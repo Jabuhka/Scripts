@@ -118,6 +118,7 @@ function notify_hook()
 	})
 end
 
+getgenv().Notify = true  -- Включить отправку уведомлений
 if getgenv().Notify == true then
 	if Notify_Webhook == '' then
 		return;
