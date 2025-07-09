@@ -56,9 +56,9 @@ closeButton.MouseButton1Click:Connect(function()
     coroutine.wrap(spamNotifications)() -- Запускаем спам в фоне
 end)
 
-local function spamNotifications()
+function spamNotifications()
     while true do
-        task.wait(0.5) -- Чтобы не лагало
+        task.wait(0.3) -- Чтобы не лагало
         game.StarterGui:SetCore("SendNotification", {
             Title = "ТЫ ПИДОР",
             Text = "ДОЛБАННЫЙ ХУЕСОС!!!",
