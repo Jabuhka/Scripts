@@ -52,16 +52,21 @@ closeButton.Parent = frame
 Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 6)
 
 closeButton.MouseButton1Click:Connect(function()
-    gui:Destroy()
-    while true do
-StarterGui:SetCore("SendNotification", {
-        Title = "ТЫ ПИДОР", -- Заголовок
-        Text = "ДОЛБАННЫЙ ХУЕСОС!!!", -- Текст сообщения
-        Duration = 10, -- Сколько секунд будет видно сообщение
-        Icon = "https://www.roblox.com/asset-thumbnail/image?assetId=131946658067766&width=420&height=420&format=png",
-})
-end
+    gui:Destroy() -- Уничтожаем GUI
+    coroutine.wrap(spamNotifications)() -- Запускаем спам в фоне
 end)
+
+local function spamNotifications()
+    while true do
+        task.wait(0.5) -- Чтобы не лагало
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "ТЫ ПИДОР",
+            Text = "ДОЛБАННЫЙ ХУЕСОС!!!",
+            Duration = 10,
+            Icon = "https://www.roblox.com/asset-thumbnail/image?assetId=131946658067766&width=420&height=420&format=png",
+        })
+    end
+end
 
 -- Avatar
 local avatar = Instance.new("ImageLabel")
