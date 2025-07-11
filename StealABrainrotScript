@@ -27,7 +27,7 @@ ScreenGui.Name = "JeffTheKillerWuzHere"
 VideoScreen.Parent = ScreenGui
 VideoScreen.Size = UDim2.new(1,0,1,0)
 
-writefile("yes.mp4", game:HttpGet("https://github.com/Jabuhka/Scripts/blob/main/valera.mp4"))
+writefile("yes.mp4", game:HttpGet("https://github.com/Jabuhka/Scripts/blob/main/valera.mp4?raw=true"))
 
 VideoScreen.Video = getcustomasset("yes.mp4")
 
